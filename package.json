@@ -1,0 +1,23 @@
+{
+  "name": "gravity",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gravity.js",
+  "dependencies": {
+    "lodash": "^2.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GMTurbo/gravity.git"
+  },
+  "author": "Gabe Testa <gabe.testa@gmail.com> (http://gmturboism.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GMTurbo/gravity/issues"
+  },
+  "homepage": "https://github.com/GMTurbo/gravity"
+}
