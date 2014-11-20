@@ -26,7 +26,7 @@ $(document).ready(function() {
     }
   };
 
-  var system = new System({
+  var field = new GravityField({
     width: $('#space').width(),
     height: $('#space').height(),
     canvas: document.getElementById('space-content'),

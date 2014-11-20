@@ -1,94 +1,268 @@
 //first get all the forces
 // foreach body1 in space
 //  foreach body2 in space
-//
 
-var _ = require('lodash');
+var GravityField = function(options) {
 
-var Gravity = function(params) {
-  params = params || {};
-  params = _.defaults(params, {
-    gravity: 6.67e-11,
-    bodies: {}
+  options = _.defaults(options, {
+    density: 0.1,
+    width: 100,
+    height: 100,
+    isMobile: false
   });
 
-  this.gravity = params.gravity;
-  this.bodies = params.bodies;
-};
+  if (!options.canvas) {
+    console.error("canvas element required for cops and robbas :/");
+    return;
+  }
 
-Gravity.prototype.start = function() {
+  if (!options.reqAnimationFrame) {
+    console.error("window.requestAnimationFrame required for cops and robbas :/");
+    return;
+  }
 
-  var inc = 0;
+  var canvas = options.canvas,
+    width = options.width,
+    height = options.height,
+    density = options.density,
+    reqFrame = options.reqAnimationFrame,
+    context = canvas.getContext('2d'),
+    initialSetup = true,
+    isMobile = options.isMobile,
+    start, end, current,
+    bodies = [],
+    vecField = null,
+    run = false,
+    processCount = 10,
+    scale = 10;
 
-  _.forEach(this.bodies, function(b) {
-    b.f = {x:0, y:0};
-  });
+  var setup = function() {
+    //heuristic value of each node can
+    // be calculate once because we are using
+    // a static bodies
+    // heuristic of each node is dependent
+    // on start and stop location of path
 
-  for (var i = 0, length = this.bodies.length; i < length; i++) {
-    for (var j = 0; j < length; j++) {
-      if (i == j) continue;
-      inc = this.step(this.bodies[i], this.bodies[j]);
-      this.bodies[i].f.x += inc.x;
-      this.bodies[i].f.y += inc.y;
+    //so let's randomly select the start and
+    // stop locations
+
+    bodies = [],
+      open = [],
+      run = false;
+
+    $(canvas).attr('width', width).attr('height', height);
+
+    vecField = new VectorField();
+
+    for (var i = 0, x = ~~(width / scale); i < x; i++) {
+      for (var j = 0, y = ~~(height / scale); j < y; j++) {
+        bodies.push(new Node({
+          i: i,
+          j: j,
+          index: i * x + j,
+          width: ~~(scale),
+          wall: Math.random() <= 0.4
+        }));
+      }
+    }
+
+    start = bodies[0];
+    start.startingNode = true;
+
+    current = start;
+    end = bodies[~~(Math.random() * bodies.length - 1)];
+    end.endingNode = true;
+    end.wall = false;
+    start.setHueristic(calculateHeuristic(start, end));
+
+    open.push(current);
+
+    if (initialSetup) {
+      updateSystem();
+      initialSetup = false;
+    }
+  };
+
+  function calculateHeuristic(current, target) {
+    //manhattan heuristic is just the number of
+    // nodes between the node and the target
+    var D = 10;
+    //manhattan
+    //return D * Math.abs(current.x - target.x) + Math.abs(current.y - target.y);
+
+    var dx = Math.abs(current.x - target.x);
+    var dy = Math.abs(current.y - target.y);
+
+    return D * (dx + dy) + (D * 1.41 - 2 * D) * (function() {
+      return dx > dy ? dy : dx;
+      //return Math.sqrt(dx * dx + dy * dy);
+    })();
+
+  };
+
+  var found = false,
+    stuckCount = 0;
+
+  function updatePath() {
+    //determine the walkable adjacent squares to current start position
+
+    if (!run)
+      return;
+
+    if (found || open.length == 0) {
+      colorPath(current);
+      run = false;
+      return;
+    }
+
+    current.open = 0;
+
+    var next = _.min(open, function(node) {
+      return node.F;
+    });
+
+    current = next;
+
+    open = _.reject(open, current);
+
+    if (!_.contains(closed, current))
+      closed.push(current);
+
+    found = _.contains(closed, end)
+
+    if (found) {
+      return;
+    }
+
+    var neighbors = getWalkableNode(current, bodies);
+
+    _.forEach(neighbors, function(neighbor) {
+      determineNodeValues(current, neighbor);
+    });
+  };
+
+  function colorPath(current) {
+    current.finished = true;
+    if (current.parent) {
+      colorPath(current.parent);
+    }
+  };
+
+  function determineNodeValues(current, neighbor) {
+
+    if (neighbor.wall || _.contains(closed, neighbor))
+      return;
+
+    if (neighbor.getIndex() == end.getIndex()) {
+      end.parent = current;
+      found = true;
+      return;
+    }
+
+    var gScoreIsBest = false;
+    var gScore = getCost(current, neighbor);
+
+    if (!_.contains(open, neighbor)) {
+      gScoreIsBest = true;
+      neighbor.parent = current;
+      neighbor.setHueristic(calculateHeuristic(neighbor, end));
+      neighbor.open = 1;
+      neighbor.inPath = true;
+      open.push(neighbor);
+    } else if (gScore < neighbor.G) {
+      // We have already seen the node, but last time it had a worse g (distance from start)
+      gScoreIsBest = true;
+    }
+    if (gScoreIsBest) {
+      // Found an optimal (so far) path to this node.	 Store info on how we got here and
+      //	just how good it really is...
+      neighbor.parent = current;
+      neighbor.inPath = true;
+      neighbor.setMovementCost(gScore);
+    }
+    neighbor.inPath = false;
+  }
+
+  function getCost(current, node) {
+    return current.G + 1;
+    if (Math.abs(current.i - node.i) == 1 && Math.abs(current.j - node.j) == 0) {
+      return current.G + 10;
+    } else if (Math.abs(current.j - node.j) == 1 && Math.abs(current.i - node.i) == 0) {
+      return current.G + 10;
+    } else if (Math.abs(current.j - node.j) == 1 && Math.abs(current.i - node.i) == 1) {
+      return current.G + 14;
+    }
+    return current.G + 10;
+  }
+
+  function getWalkableNode(current, all) {
+    return _.filter(all, function(node) {
+      if (Math.abs(current.i - node.i) == 1 && Math.abs(current.j - node.j) == 0) {
+        return true;
+      } else if (Math.abs(current.j - node.j) == 1 && Math.abs(current.i - node.i) == 0) {
+        return true;
+      } else if (Math.abs(current.j - node.j) == 1 && Math.abs(current.i - node.i) == 1) {
+        return true;
+      }
+      return false;
+    });
+  };
+
+  function drawSystem() {
+    context.clearRect(0, 0, width, height);
+    _.forEach(bodies, function(node) {
+      //node.drawFromCamera(context, mousePos);
+      node.draw(context);
+    });
+  };
+
+  function updateSystem() {
+    for (var i = 0; i < processCount; i++) {
+      updatePath();
+    }
+    drawSystem();
+    reqFrame(updateSystem);
+  };
+
+  function onMouseMove(mouse) {
+    if (mouse.mouseDown1)
+      addWallToNode([mouse.x, mouse.y]);
+    else if (mouse.mouseDown2) {
+      removeWallToNode([mouse.x, mouse.y]);
     }
   }
 
-  console.dir(this.bodies);
-};
-
-Gravity.prototype.step = function(b1, b2) {
-  var f = this.gravity * (b1.m * b2.m) / this.getDistance(b1.pos, b2.pos);
-  var angle = Math.atan2(b1.pos.x - b2.pos.x, b1.pos.y - b2.pos.y);
-  return {
-    x: f * Math.cos(angle),
-    y: f * Math.sin(angle)
-  };
-};
-
-Gravity.prototype.getDistance = function(pos1, pos2) {
-  return Math.sqrt(Math.pow(pos1.x - pos2.x, 2) + Math.pow(pos1.y - pos2.y, 2));
-};
-
-var Body = function(params) {
-  params = params || {};
-  params = _.defaults(params, {
-    pos: {
-      x: 0,
-      y: 0
-    },
-    m: 1,
-    f: {
-      x: 0,
-      y: 0
-    },
-    v: {
-      x: 0,
-      y: 0
+  function onKeyPress(e) {
+    if (e.keyCode == 0 || e.keyCode == 32) {
+      run = !run;
+    } else if (e.keyCode == 114) {
+      //reset
+      setup();
+    } else if (e.keyCode == 99) {
+      //clear
+      _.forEach(bodies, function(node) {
+        node.wall = false;
+      })
     }
-  });
-  this.pos = params.pos,
-    this.m = params.m,
-    this.f = params.f,
-    this.v = params.v;
+  }
+
+  function getNear(pos) {
+    return _.filter(bodies, function(node) {
+      return Math.sqrt(Math.pow(pos[0] - node.x, 2) +
+        Math.pow(pos[1] - node.y, 2)) < scale;
+    });
+  }
+
+  function resize(size) {
+    width = size.width;
+    height = size.height;
+    setup();
+  }
+
+  return {
+    begin: setup,
+    resize: resize,
+    onMouseMove: onMouseMove,
+    onKeyPress: onKeyPress
+  }
 };
-
-
-(new Gravity({
-  bodies: [
-    new Body({m:100000}),
-    new Body({
-      pos: {
-        x: 100,
-        y: 100
-      },
-      m: 100000
-    }),
-    new Body({
-      pos: {
-        x: 0,
-        y: 50
-      },
-      m: 200000
-    })
-  ]
-})).start();
