@@ -2,8 +2,10 @@ var Body = function(params) {
   params = params || {};
 
   this.pos = params.pos || [0, 0];
-  this.mass = params.mass || 100;
   this.r = params.r || 10;
+  this.mass = params.mass || 100 * this.r;
+  this.dx = params.dx || -1 + Math.random() * 2 ;
+  this.dy = params.dy || -1 + Math.random() * 2 ;
 };
 
 Body.prototype.draw = function(context) {
@@ -16,6 +18,11 @@ Body.prototype.draw = function(context) {
   context.closePath();
   context.fill();
   context.stroke();
+};
+
+Body.prototype.step = function() {
+  this.pos[0]+=this.dx;
+  this.pos[1]+=this.dy;
 };
 
 Body.prototype.getColor = function() {

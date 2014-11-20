@@ -21,14 +21,15 @@ var GravityField = function(options) {
     height = options.height,
     reqFrame = options.reqAnimationFrame,
     context = canvas.getContext('2d'),
+    rbf = new RBF(),
     initialSetup = true,
     isMobile = options.isMobile,
     bodies = [],
     vecField = null,
     run = false,
-    scale = 10,
+    scale = 15,
     maxRadius = 10,
-    maxWeight = 1000;
+    maxWeight = 100;
 
   var setup = function() {
     //heuristic value of each node can
@@ -46,9 +47,12 @@ var GravityField = function(options) {
     $(canvas).attr('width', width).attr('height', height);
 
     vecField = new VectorField({
+      width: width,
+      height: height,
       xRes: ~~(width / scale),
       yRes: ~~(height / scale),
-      type: 'line'
+      type: 'line',
+      maxVal: maxWeight
     });
 
     for (var i = 0; i < 10; i++) {
@@ -57,8 +61,10 @@ var GravityField = function(options) {
           [0, width],
           [0, height]
         ]),
-        r: ~~(Math.random() * maxRadius),
-        mass: ~~(Math.random() * maxWeight)
+        r: 5 + ~~(Math.random() * maxRadius),
+      //mass: 10 + ~~(Math.random() * maxWeight)
+          // dx: ~~(Math.random() * 5),
+          // dy: ~~(Math.random() * 5)
       }));
     }
 
@@ -71,10 +77,11 @@ var GravityField = function(options) {
 
   function drawSystem() {
     context.clearRect(0, 0, width, height);
+    vecField.draw(context);
     for (var i = 0; i < bodies.length; i++) {
       bodies[i].draw(context);
     }
-    vecField.draw(context);
+
   };
 
   function updateSystem() {
@@ -85,19 +92,46 @@ var GravityField = function(options) {
   };
 
   function updateBodies() {
-
+    for (var i = 0; i < bodies.length; i++) {
+      bodies[i].step();
+    }
   };
 
   function updateField() {
-
+    var target = bodies.map(function(body) {
+      return body.mass;
+    });
+    var locations = bodies.map(function(body) {
+      return body.pos;
+    });
+    rbf.compileSync(locations, target);
+    vecField.updateField(rbf);
   };
 
   function onMouseMove(mouse) {
     if (mouse.mouseDown1) {
-      //  addWallToNode([mouse.x, mouse.y]);
+      moveBody([mouse.x, mouse.y]);
     } else if (mouse.mouseDown2) {
-      //  removeWallToNode([mouse.x, mouse.y]);
+      addBody([mouse.x, mouse.y]);
     }
+  }
+
+  function moveBody(pos) {
+    var bs = getNearest(pos);
+
+    if (bs.length > 0) {
+      _.forEach(bodies, function(body) {
+        body.pos = pos;
+      });
+    }
+  }
+
+  function addBody(pos) {
+    bodies.push(new Body({
+      pos: pos,
+      r: 5 + ~~(Math.random() * maxRadius),
+      //mass: 10 + ~~(Math.random() * maxWeight)
+    }));
   }
 
   function onKeyPress(e) {
@@ -125,6 +159,13 @@ var GravityField = function(options) {
       ret = ret.concat(Number(val.toPrecision(3)));
     }
     return ret;
+  }
+
+  function getNearest(pos) {
+    return _.filter(bodies, function(body) {
+      return Math.sqrt(Math.pow(pos[0] - body.pos[0], 2) +
+        Math.pow(pos[1] - body.pos[1], 2)) < 25;
+    });
   }
 
   return {

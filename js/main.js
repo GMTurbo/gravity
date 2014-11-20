@@ -49,7 +49,7 @@ $(document).ready(function() {
   });
 
   $(window).on("mousemove", function(event) {
-    system.onMouseMove({
+    field.onMouseMove({
       x: event.pageX,
       y: event.pageY,
       mouseDown1: mouseDown1,
@@ -63,14 +63,14 @@ $(document).ready(function() {
   });
 
   $(window).on("keypress", function(event) {
-    system.onKeyPress({
+    field.onKeyPress({
       keyCode: event.keyCode
     });
   });
 
   $(window).resize(function() {
 
-    system.resize({
+    field.resize({
       width: $('#space').width(),
       height: $('#space').height()
     });

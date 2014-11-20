@@ -14,7 +14,7 @@ var RBF = function() {
   //gaussian
   var kernel = function(pnt1, pnt2) {
     var r = distance(pnt1, pnt2);
-    var sigma = 1e-3;
+    var sigma = 0.002;
     if (r === 0) return 0;
     return Math.exp(-(sigma * r));
   };
@@ -140,42 +140,6 @@ var RBF = function() {
   };
 };
 
-// debugger;
-//
-// var rbf3D = new RBF();
-//
-// var target = [10, 20, 300, 40];
-//
-// //[x,y,mass]
-// var pnts3D = [
-//   [10, 10, 10],
-//   [20, 10, 20],
-//   [30, 20, 100],
-//   [40, 100, 100]
-// ];
-//
-// rbf3D.compileSync(pnts3D, target, function(err) {
-//
-//   if (err) {
-//     console.error(err);
-//     return;
-//   }
-//
-//   pnts3D.push([10, 10, 10]);
-//   pnts3D.push([20, 20, 10]);
-//   pnts3D.push([30, 10, 20]);
-//   pnts3D.push([40, 10, 10]);
-//   rbf3D.getValues(pnts3D, function(err, result) {
-//     if (err) {
-//       console.error(err);
-//       return;
-//     }
-//
-//     console.dir(result);
-//   });
-//
-// });
-//
 // ws = rbf3D.compileSync(pnts3D, target);
 // pnts3D.push([10, 10, 10]);
 // pnts3D.push([20, 20, 10]);
