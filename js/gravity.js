@@ -1,11 +1,10 @@
 var GravityField = function(options) {
 
-  options = _.defaults(options, {
-    density: 0.1,
-    width: 100,
-    height: 100,
-    isMobile: false
-  });
+  options = options || {};
+
+  options.width = options.width || 100;
+  options.height = options.height || 100;
+  options.isMobile = options.isMobile || false;
 
   if (!options.canvas) {
     console.error("canvas element required for cops and robbas :/");
@@ -20,7 +19,6 @@ var GravityField = function(options) {
   var canvas = options.canvas,
     width = options.width,
     height = options.height,
-    density = options.density,
     reqFrame = options.reqAnimationFrame,
     context = canvas.getContext('2d'),
     initialSetup = true,
@@ -53,7 +51,7 @@ var GravityField = function(options) {
       type: 'line'
     });
 
-    for (var i = 0, x = 10; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       bodies.push(new Body({
         pos: getRandomPoint(2, [
           [0, width],
@@ -64,169 +62,41 @@ var GravityField = function(options) {
       }));
     }
 
-    start = bodies[0];
-    start.startingNode = true;
-
-    current = start;
-    end = bodies[~~(Math.random() * bodies.length - 1)];
-    end.endingNode = true;
-    end.wall = false;
-    start.setHueristic(calculateHeuristic(start, end));
-
-    open.push(current);
-
     if (initialSetup) {
       updateSystem();
       initialSetup = false;
     }
   };
 
-  function calculateHeuristic(current, target) {
-    //manhattan heuristic is just the number of
-    // nodes between the node and the target
-    var D = 10;
-    //manhattan
-    //return D * Math.abs(current.x - target.x) + Math.abs(current.y - target.y);
-
-    var dx = Math.abs(current.x - target.x);
-    var dy = Math.abs(current.y - target.y);
-
-    return D * (dx + dy) + (D * 1.41 - 2 * D) * (function() {
-      return dx > dy ? dy : dx;
-      //return Math.sqrt(dx * dx + dy * dy);
-    })();
-
-  };
-
-  var found = false,
-    stuckCount = 0;
-
-  function updatePath() {
-    //determine the walkable adjacent squares to current start position
-
-    if (!run)
-      return;
-
-    if (found || open.length == 0) {
-      colorPath(current);
-      run = false;
-      return;
-    }
-
-    current.open = 0;
-
-    var next = _.min(open, function(node) {
-      return node.F;
-    });
-
-    current = next;
-
-    open = _.reject(open, current);
-
-    if (!_.contains(closed, current))
-      closed.push(current);
-
-    found = _.contains(closed, end)
-
-    if (found) {
-      return;
-    }
-
-    var neighbors = getWalkableNode(current, bodies);
-
-    _.forEach(neighbors, function(neighbor) {
-      determineNodeValues(current, neighbor);
-    });
-  };
-
-  function colorPath(current) {
-    current.finished = true;
-    if (current.parent) {
-      colorPath(current.parent);
-    }
-  };
-
-  function determineNodeValues(current, neighbor) {
-
-    if (neighbor.wall || _.contains(closed, neighbor))
-      return;
-
-    if (neighbor.getIndex() == end.getIndex()) {
-      end.parent = current;
-      found = true;
-      return;
-    }
-
-    var gScoreIsBest = false;
-    var gScore = getCost(current, neighbor);
-
-    if (!_.contains(open, neighbor)) {
-      gScoreIsBest = true;
-      neighbor.parent = current;
-      neighbor.setHueristic(calculateHeuristic(neighbor, end));
-      neighbor.open = 1;
-      neighbor.inPath = true;
-      open.push(neighbor);
-    } else if (gScore < neighbor.G) {
-      // We have already seen the node, but last time it had a worse g (distance from start)
-      gScoreIsBest = true;
-    }
-    if (gScoreIsBest) {
-      // Found an optimal (so far) path to this node.	 Store info on how we got here and
-      //	just how good it really is...
-      neighbor.parent = current;
-      neighbor.inPath = true;
-      neighbor.setMovementCost(gScore);
-    }
-    neighbor.inPath = false;
-  }
-
-  function getCost(current, node) {
-    return current.G + 1;
-    if (Math.abs(current.i - node.i) == 1 && Math.abs(current.j - node.j) == 0) {
-      return current.G + 10;
-    } else if (Math.abs(current.j - node.j) == 1 && Math.abs(current.i - node.i) == 0) {
-      return current.G + 10;
-    } else if (Math.abs(current.j - node.j) == 1 && Math.abs(current.i - node.i) == 1) {
-      return current.G + 14;
-    }
-    return current.G + 10;
-  }
-
-  function getWalkableNode(current, all) {
-    return _.filter(all, function(node) {
-      if (Math.abs(current.i - node.i) == 1 && Math.abs(current.j - node.j) == 0) {
-        return true;
-      } else if (Math.abs(current.j - node.j) == 1 && Math.abs(current.i - node.i) == 0) {
-        return true;
-      } else if (Math.abs(current.j - node.j) == 1 && Math.abs(current.i - node.i) == 1) {
-        return true;
-      }
-      return false;
-    });
-  };
 
   function drawSystem() {
     context.clearRect(0, 0, width, height);
-    _.forEach(bodies, function(node) {
-      //node.drawFromCamera(context, mousePos);
-      node.draw(context);
-    });
+    for (var i = 0; i < bodies.length; i++) {
+      bodies[i].draw(context);
+    }
+    vecField.draw(context);
   };
 
   function updateSystem() {
-    for (var i = 0; i < processCount; i++) {
-      updatePath();
-    }
+    updateBodies();
+    updateField();
     drawSystem();
     reqFrame(updateSystem);
   };
 
+  function updateBodies() {
+
+  };
+
+  function updateField() {
+
+  };
+
   function onMouseMove(mouse) {
-    if (mouse.mouseDown1)
-      addWallToNode([mouse.x, mouse.y]);
-    else if (mouse.mouseDown2) {
-      removeWallToNode([mouse.x, mouse.y]);
+    if (mouse.mouseDown1) {
+      //  addWallToNode([mouse.x, mouse.y]);
+    } else if (mouse.mouseDown2) {
+      //  removeWallToNode([mouse.x, mouse.y]);
     }
   }
 
@@ -236,19 +106,7 @@ var GravityField = function(options) {
     } else if (e.keyCode == 114) {
       //reset
       setup();
-    } else if (e.keyCode == 99) {
-      //clear
-      _.forEach(bodies, function(node) {
-        node.wall = false;
-      })
     }
-  }
-
-  function getNear(pos) {
-    return _.filter(bodies, function(node) {
-      return Math.sqrt(Math.pow(pos[0] - node.x, 2) +
-        Math.pow(pos[1] - node.y, 2)) < scale;
-    });
   }
 
   function resize(size) {

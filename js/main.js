@@ -34,7 +34,7 @@ $(document).ready(function() {
     isMobile: isMobile.any()
   });
 
-  system.begin();
+  field.begin();
 
   var mouseDown1 = 0, mouseDown2 = 0;
 
