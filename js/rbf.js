@@ -11,8 +11,7 @@ var RBF = function() {
     return Math.sqrt(sum);
   };
 
-  //this is going to be a thin-plate spline
-  //f(x,y) = a1 + a2x + a3y + SUM(wi * kernel())
+  //gaussian
   var kernel = function(pnt1, pnt2) {
     var r = distance(pnt1, pnt2);
     var sigma = 1e-3;

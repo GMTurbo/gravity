@@ -1,7 +1,3 @@
-//first get all the forces
-// foreach body1 in space
-//  foreach body2 in space
-
 var GravityField = function(options) {
 
   options = _.defaults(options, {
@@ -29,12 +25,12 @@ var GravityField = function(options) {
     context = canvas.getContext('2d'),
     initialSetup = true,
     isMobile = options.isMobile,
-    start, end, current,
     bodies = [],
     vecField = null,
     run = false,
-    processCount = 10,
-    scale = 10;
+    scale = 10,
+    maxRadius = 10,
+    maxWeight = 1000;
 
   var setup = function() {
     //heuristic value of each node can
@@ -47,23 +43,25 @@ var GravityField = function(options) {
     // stop locations
 
     bodies = [],
-      open = [],
       run = false;
 
     $(canvas).attr('width', width).attr('height', height);
 
-    vecField = new VectorField();
+    vecField = new VectorField({
+      xRes: ~~(width / scale),
+      yRes: ~~(height / scale),
+      type: 'line'
+    });
 
-    for (var i = 0, x = ~~(width / scale); i < x; i++) {
-      for (var j = 0, y = ~~(height / scale); j < y; j++) {
-        bodies.push(new Node({
-          i: i,
-          j: j,
-          index: i * x + j,
-          width: ~~(scale),
-          wall: Math.random() <= 0.4
-        }));
-      }
+    for (var i = 0, x = 10; i < 10; i++) {
+      bodies.push(new Body({
+        pos: getRandomPoint(2, [
+          [0, width],
+          [0, height]
+        ]),
+        r: ~~(Math.random() * maxRadius),
+        mass: ~~(Math.random() * maxWeight)
+      }));
     }
 
     start = bodies[0];
@@ -257,6 +255,18 @@ var GravityField = function(options) {
     width = size.width;
     height = size.height;
     setup();
+  }
+
+  //dim = dimension
+  //range = [[min1,max2],[min2,max2],..]
+  function getRandomPoint(dim, range) {
+    var ret = [],
+      val;
+    for (var i = 0; i < dim; i++) {
+      val = range[i][0] + Math.random() * Math.abs(range[i][1] - range[i][0])
+      ret = ret.concat(Number(val.toPrecision(3)));
+    }
+    return ret;
   }
 
   return {
