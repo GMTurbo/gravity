@@ -59,7 +59,9 @@ FieldNode.prototype.draw = function(context, max){
   context.beginPath();
   context.fillStyle = this.getColor(max);
   //context.arc(pnt[0] - r, pnt[1] - r, r, 0, 2 * Math.PI, false);
-  context.rect(pnt[0], pnt[1], this.width, this.height);
+  //context.rect(pnt[0], pnt[1], this.width, this.height);
+  context.font="12px Georgia";
+  context.fillText(this.val.toPrecision(1),pnt[0],pnt[1]);
   context.closePath();
   context.fill();
   context.stroke();

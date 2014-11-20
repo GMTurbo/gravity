@@ -3,9 +3,11 @@ var Body = function(params) {
 
   this.pos = params.pos || [0, 0];
   this.r = params.r || 10;
-  this.mass = params.mass || 100 * this.r;
-  this.dx = params.dx || -1 + Math.random() * 2 ;
-  this.dy = params.dy || -1 + Math.random() * 2 ;
+  this.mass = params.mass || 1000 * this.r;
+  this.dx = params.dx || -2 + Math.random() * 4 ;
+  this.dy = params.dy || -2 + Math.random() * 4 ;
+  this.maxX = params.maxX || 100;
+  this.maxY = params.maxY || 100 ;
 };
 
 Body.prototype.draw = function(context) {
@@ -21,12 +23,16 @@ Body.prototype.draw = function(context) {
 };
 
 Body.prototype.step = function() {
+  if(this.pos[0] + this.dx > this.maxX || this.pos[0] + this.dx < 0)
+    this.dx*=-1;
+  if(this.pos[1] + this.dy > this.maxY || this.pos[1] + this.dy < 0)
+    this.dy*=-1;
   this.pos[0]+=this.dx;
   this.pos[1]+=this.dy;
 };
 
 Body.prototype.getColor = function() {
-  return 'rgb(255,255,255)';
+  return 'rgb(128,128,128)';
 };
 
 Body.prototype.getShadowColor = function() {

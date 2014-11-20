@@ -27,8 +27,8 @@ var GravityField = function(options) {
     bodies = [],
     vecField = null,
     run = false,
-    scale = 25,
-    maxRadius = 10,
+    scale = 30,
+    maxRadius = 30,
     maxWeight = 100;
 
   var setup = function() {
@@ -55,13 +55,15 @@ var GravityField = function(options) {
       maxVal: maxWeight
     });
 
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 2; i++) {
       bodies.push(new Body({
         pos: getRandomPoint(2, [
           [0, width],
           [0, height]
         ]),
         r: 5 + ~~(Math.random() * maxRadius),
+        maxX: width,
+        maxY: height
       //mass: 10 + ~~(Math.random() * maxWeight)
           // dx: ~~(Math.random() * 5),
           // dy: ~~(Math.random() * 5)
@@ -130,6 +132,8 @@ var GravityField = function(options) {
     bodies.push(new Body({
       pos: pos,
       r: 5 + ~~(Math.random() * maxRadius),
+      maxX: width,
+      maxY: height
       //mass: 10 + ~~(Math.random() * maxWeight)
     }));
   }
