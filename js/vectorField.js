@@ -66,5 +66,5 @@ FieldNode.prototype.draw = function(context, max){
 };
 
 FieldNode.prototype.getColor = function(max){
-  return chroma.interpolate('green', 'red', this.val/max)
+  return chroma.interpolate('green', 'red', Math.abs(this.val/max))
 };

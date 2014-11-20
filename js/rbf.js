@@ -14,7 +14,7 @@ var RBF = function() {
   //gaussian
   var kernel = function(pnt1, pnt2) {
     var r = distance(pnt1, pnt2);
-    var sigma = 0.002;
+    var sigma = 0.01;
     if (r === 0) return 0;
     return Math.exp(-(sigma * r));
   };
