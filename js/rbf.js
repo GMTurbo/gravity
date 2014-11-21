@@ -1,6 +1,6 @@
 var RBF = function() {
   var centers, ws, ys;
-  var sigma = 0.01;
+  var sigma = 0.005;
   var distance = function(pnt1, pnt2) {
     var sum = 0;
     if (!pnt1.length)

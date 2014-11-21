@@ -34,7 +34,7 @@ VectorField.prototype.updateField = function(rbf){
 
 VectorField.prototype.draw = function(context){
   var max = -1e9, min = 1e9;
-  
+
   _.forEach(this.nodes, function(node){
     if(node.val > max) max = node.val;
     else if(node.val < min) min = node.val;
@@ -61,14 +61,14 @@ FieldNode.prototype.draw = function(context, max){
   context.beginPath();
   context.fillStyle = this.getColor(max);
   //context.arc(pnt[0] - r, pnt[1] - r, r, 0, 2 * Math.PI, false);
-  //context.rect(pnt[0], pnt[1], this.width, this.height);
-  context.font="12px Georgia";
-  context.fillText(this.val.toPrecision(1),pnt[0],pnt[1]);
+  context.rect(pnt[0], pnt[1], this.width, this.height);
+  //context.font="12px Georgia";
+  //context.fillText(this.val.toPrecision(1),pnt[0],pnt[1]);
   context.closePath();
   context.fill();
-  context.stroke();
+//  context.stroke();
 };
 
 FieldNode.prototype.getColor = function(max){
-  return chroma.interpolate('green', 'red', Math.abs(this.val/max));
+  return chroma.interpolate('blue', 'red', Math.abs(this.val/max));
 };

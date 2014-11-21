@@ -26,8 +26,8 @@ var GravityField = function(options) {
     isMobile = options.isMobile,
     bodies = [],
     vecField = null,
-    run = false,
-    scale = 30,
+    run = true,
+    scale = 20,
     maxRadius = 30,
     maxWeight = 100;
 
@@ -84,9 +84,11 @@ var GravityField = function(options) {
   }
 
   function updateSystem() {
-    updateBodies();
-    updateField();
-    drawSystem();
+    if (run) {
+      updateBodies();
+      updateField();
+      drawSystem();
+    }
     reqFrame(updateSystem);
   }
 
@@ -101,7 +103,7 @@ var GravityField = function(options) {
       return body.mass;
     });
     var locations = bodies.map(function(body) {
-      return body.pos;
+      return [body.pos[0]- body.r, body.pos[1]- body.r];
     });
     if (rbf.compileSync(locations, target))
       vecField.updateField(rbf);
@@ -118,10 +120,11 @@ var GravityField = function(options) {
 
     if (bs.length > 0) {
       _.forEach(bs, function(body) {
-        body.pos = pos;
+        body.pos[0] = pos[0] + body.r;
+        body.pos[1] = pos[1] + body.r;
         body.locked = true;
       });
-    }else{
+    } else {
       _.forEach(bodies, function(body) {
         body.locked = false;
       });
@@ -139,16 +142,16 @@ var GravityField = function(options) {
   }
 
   function onKeyPress(e) {
-    if (e.keyCode === 0 || e.keyCode == 32) {
+    if (e.keyCode === 0 || e.keyCode == 32) { //space
       run = !run;
-    } else if (e.keyCode == 114) {
+    } else if (e.keyCode == 114) { //r
       //reset
       setup();
-    } else if(e.keyCode == 97){
+    } else if (e.keyCode == 97) {
       addBody(getRandomPoint(2, [
         [0, width],
         [0, height]
-        ]));
+      ]));
     }
   }
 
@@ -173,7 +176,7 @@ var GravityField = function(options) {
   function getNearest(mousePos) {
     return _.filter(bodies, function(body) {
       return Math.sqrt(Math.pow(mousePos[0] - body.pos[0], 2) +
-        Math.pow(mousePos[1] - body.pos[1], 2)) < body.r*2;
+        Math.pow(mousePos[1] - body.pos[1], 2)) < body.r * 2;
     });
   }
 

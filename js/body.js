@@ -8,8 +8,8 @@ var Body = function(params) {
   this.dy = params.dy || -2 + Math.random() * 4 ;
   this.maxX = params.maxX || 100;
   this.maxY = params.maxY || 100;
-  this.maxX -= this.r/2;
-  this.maxY -= this.r/2;
+  this.maxX -= this.r;
+  this.maxY -= this.r;
   this.locked = false;
 };
 
