@@ -36,30 +36,18 @@ $(document).ready(function() {
 
   field.begin();
 
-  var mouseDown1 = 0, mouseDown2 = 0;
-
-  $(window).on("mousedown", function(event) {
-    event.stopPropagation();
-    if(event.ctrlKey){
-      mouseDown2 = 1;
-    }else{
-      mouseDown1 = 1;
-    }
-
-  });
+  var mouseDown1 = 1,
+    mouseDown2 = 0;
 
   $(window).on("mousemove", function(event) {
-    field.onMouseMove({
-      x: event.pageX,
-      y: event.pageY,
-      mouseDown1: mouseDown1,
-      mouseDown2: mouseDown2
-    });
-  });
-
-  $(window).on("mouseup", function(event) {
-    event.stopPropagation();
-    mouseDown1 = mouseDown2 = 0;
+    if (mouseDown1 || mouseDown2) {
+      field.onMouseMove({
+        x: event.pageX,
+        y: event.pageY,
+        mouseDown1: mouseDown1,
+        mouseDown2: mouseDown2
+      });
+    }
   });
 
   $(window).on("keypress", function(event) {
@@ -67,7 +55,7 @@ $(document).ready(function() {
       keyCode: event.keyCode
     });
   });
-
+  //
   $(window).resize(function() {
 
     field.resize({

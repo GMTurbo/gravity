@@ -110,8 +110,6 @@ var GravityField = function(options) {
   function onMouseMove(mouse) {
     if (mouse.mouseDown1) {
       moveBody([mouse.x, mouse.y]);
-    } else if (mouse.mouseDown2) {
-      addBody([mouse.x, mouse.y]);
     }
   }
 
@@ -119,8 +117,13 @@ var GravityField = function(options) {
     var bs = getNearest(pos);
 
     if (bs.length > 0) {
-      _.forEach(bodies, function(body) {
+      _.forEach(bs, function(body) {
         body.pos = pos;
+        body.locked = true;
+      });
+    }else{
+      _.forEach(bodies, function(body) {
+        body.locked = false;
       });
     }
   }
@@ -141,6 +144,11 @@ var GravityField = function(options) {
     } else if (e.keyCode == 114) {
       //reset
       setup();
+    } else if(e.keyCode == 97){
+      addBody(getRandomPoint(2, [
+        [0, width],
+        [0, height]
+        ]));
     }
   }
 
@@ -162,10 +170,10 @@ var GravityField = function(options) {
     return ret;
   }
 
-  function getNearest(pos) {
+  function getNearest(mousePos) {
     return _.filter(bodies, function(body) {
-      return Math.sqrt(Math.pow(pos[0] - body.pos[0], 2) +
-        Math.pow(pos[1] - body.pos[1], 2)) < 25;
+      return Math.sqrt(Math.pow(mousePos[0] - body.pos[0], 2) +
+        Math.pow(mousePos[1] - body.pos[1], 2)) < body.r*2;
     });
   }
 

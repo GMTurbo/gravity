@@ -33,11 +33,15 @@ VectorField.prototype.updateField = function(rbf){
 };
 
 VectorField.prototype.draw = function(context){
-  var max = _.max(this.nodes, function(node) { return node.val;});
-  var min = _.min(this.nodes, function(node) { return node.val;});
+  var max = -1e9, min = 1e9;
+  
+  _.forEach(this.nodes, function(node){
+    if(node.val > max) max = node.val;
+    else if(node.val < min) min = node.val;
+  });
 
   for(var i = 0, length = this.nodes.length; i < length; i++){
-    this.nodes[i].draw(context, Math.abs(max.val) + Math.abs(min.val));
+    this.nodes[i].draw(context, Math.abs(max) + Math.abs(min));
   }
 };
 

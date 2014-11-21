@@ -10,6 +10,7 @@ var Body = function(params) {
   this.maxY = params.maxY || 100;
   this.maxX -= this.r/2;
   this.maxY -= this.r/2;
+  this.locked = false;
 };
 
 Body.prototype.draw = function(context) {
@@ -29,6 +30,8 @@ Body.prototype.step = function() {
     this.dx*=-1;
   if(this.pos[1] + this.dy > this.maxY || this.pos[1] + this.dy < 0)
     this.dy*=-1;
+  if(this.locked)
+    return;
   this.pos[0]+=this.dx;
   this.pos[1]+=this.dy;
 };
