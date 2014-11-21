@@ -21,7 +21,7 @@ var VectorField = function(params){
         width: stepX,
         height: stepY,
         maxVal: this.maxVal
-      }))
+      }));
     }
   }
 };
@@ -35,9 +35,7 @@ VectorField.prototype.updateField = function(rbf){
 VectorField.prototype.draw = function(context){
   var max = _.max(this.nodes, function(node) { return node.val;});
   var min = _.min(this.nodes, function(node) { return node.val;});
-  if(Math.abs(max.val) + Math.abs(min.val) > this.maxRange){
-    this.maxRange = Math.abs(max.val) + Math.abs(min.val)
-  }
+
   for(var i = 0, length = this.nodes.length; i < length; i++){
     this.nodes[i].draw(context, Math.abs(max.val) + Math.abs(min.val));
   }
@@ -68,5 +66,5 @@ FieldNode.prototype.draw = function(context, max){
 };
 
 FieldNode.prototype.getColor = function(max){
-  return chroma.interpolate('green', 'red', Math.abs(this.val/max))
+  return chroma.interpolate('green', 'red', Math.abs(this.val/max));
 };

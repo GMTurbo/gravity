@@ -32,9 +32,9 @@ var RBF = function() {
       return [];
     }
 
-    centers = cents.slice(),
-      ys = y_vals.slice(),
-      ws = [];
+    centers = cents.slice();
+    ys = y_vals.slice();
+    ws = [];
 
     var matrix = [],
       matRow = [];
@@ -48,7 +48,7 @@ var RBF = function() {
 
     ws = this._solve(ys, matrix);
 
-    return ws ? ws.elements : [];
+    return ws !== undefined;
   };
 
   this.compile = function(cents, y_vals, cb) {
@@ -66,9 +66,9 @@ var RBF = function() {
         return;
       }
 
-      centers = cents.slice(),
-        ys = y_vals.slice(),
-        ws = [];
+      centers = cents.slice();
+      ys = y_vals.slice();
+      ws = [];
 
       var matrix = [],
         matRow = [];
@@ -139,11 +139,3 @@ var RBF = function() {
     };
   };
 };
-
-// ws = rbf3D.compileSync(pnts3D, target);
-// pnts3D.push([10, 10, 10]);
-// pnts3D.push([20, 20, 10]);
-// pnts3D.push([30, 10, 20]);
-// pnts3D.push([40, 10, 10]);
-// result = rbf3D.getValuesSync(pnts3D);
-// console.dir(result);

@@ -41,8 +41,8 @@ var GravityField = function(options) {
     //so let's randomly select the start and
     // stop locations
 
-    bodies = [],
-      run = false;
+    bodies = [];
+    run = false;
 
     $(canvas).attr('width', width).attr('height', height);
 
@@ -64,9 +64,6 @@ var GravityField = function(options) {
         r: 5 + ~~(Math.random() * maxRadius),
         maxX: width,
         maxY: height
-      //mass: 10 + ~~(Math.random() * maxWeight)
-          // dx: ~~(Math.random() * 5),
-          // dy: ~~(Math.random() * 5)
       }));
     }
 
@@ -84,20 +81,20 @@ var GravityField = function(options) {
       bodies[i].draw(context);
     }
 
-  };
+  }
 
   function updateSystem() {
     updateBodies();
     updateField();
     drawSystem();
     reqFrame(updateSystem);
-  };
+  }
 
   function updateBodies() {
     for (var i = 0; i < bodies.length; i++) {
       bodies[i].step();
     }
-  };
+  }
 
   function updateField() {
     var target = bodies.map(function(body) {
@@ -106,9 +103,9 @@ var GravityField = function(options) {
     var locations = bodies.map(function(body) {
       return body.pos;
     });
-    rbf.compileSync(locations, target);
-    vecField.updateField(rbf);
-  };
+    if (rbf.compileSync(locations, target))
+      vecField.updateField(rbf);
+  }
 
   function onMouseMove(mouse) {
     if (mouse.mouseDown1) {
@@ -134,12 +131,12 @@ var GravityField = function(options) {
       r: 5 + ~~(Math.random() * maxRadius),
       maxX: width,
       maxY: height
-      //mass: 10 + ~~(Math.random() * maxWeight)
+        //mass: 10 + ~~(Math.random() * maxWeight)
     }));
   }
 
   function onKeyPress(e) {
-    if (e.keyCode == 0 || e.keyCode == 32) {
+    if (e.keyCode === 0 || e.keyCode == 32) {
       run = !run;
     } else if (e.keyCode == 114) {
       //reset
@@ -159,7 +156,7 @@ var GravityField = function(options) {
     var ret = [],
       val;
     for (var i = 0; i < dim; i++) {
-      val = range[i][0] + Math.random() * Math.abs(range[i][1] - range[i][0])
+      val = range[i][0] + Math.random() * Math.abs(range[i][1] - range[i][0]);
       ret = ret.concat(Number(val.toPrecision(3)));
     }
     return ret;
@@ -177,5 +174,5 @@ var GravityField = function(options) {
     resize: resize,
     onMouseMove: onMouseMove,
     onKeyPress: onKeyPress
-  }
+  };
 };
