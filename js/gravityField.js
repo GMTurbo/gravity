@@ -32,14 +32,6 @@ var GravityField = function(options) {
     maxWeight = 100;
 
   var setup = function() {
-    //heuristic value of each node can
-    // be calculate once because we are using
-    // a static bodies
-    // heuristic of each node is dependent
-    // on start and stop location of path
-
-    //so let's randomly select the start and
-    // stop locations
 
     bodies = [];
     run = false;
