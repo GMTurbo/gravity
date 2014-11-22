@@ -61,7 +61,7 @@ var GravityField = function(options) {
           [0, width],
           [0, height]
         ]),
-        r: 5 + ~~(Math.random() * maxRadius),
+        r: 10 + ~~(Math.random() * maxRadius),
         maxX: width,
         maxY: height
       }));
