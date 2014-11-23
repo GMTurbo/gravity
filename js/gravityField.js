@@ -27,7 +27,7 @@ var GravityField = function(options) {
     bodies = [],
     vecField = null,
     run = true,
-    scale = 20,
+    scale = 10,
     maxRadius = 30,
     maxWeight = 100;
 
@@ -91,6 +91,11 @@ var GravityField = function(options) {
   }
 
   function updateField() {
+
+    //First solve for the forces f = Gm1m2/r^2
+    //then get all pointing vectors from field point to bodies
+    // magnitude is force and next trajectory unit vector is
+    // sum vx, sum vy
     var target = bodies.map(function(body) {
       return body.mass;
     });
@@ -98,7 +103,7 @@ var GravityField = function(options) {
       return [body.pos[0]- body.r, body.pos[1]- body.r];
     });
     if (rbf.compileSync(locations, target))
-      vecField.updateField(rbf);
+      vecField.updateField(rbf, bodies);
   }
 
   function onMouseMove(mouse) {
