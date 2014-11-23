@@ -33,7 +33,7 @@ VectorField.prototype.updateField = function(rbf, bodies){
   // every body from the field point
   _.forEach(this.nodes, function(node){
     node.val = rbf.getValue(node.pos);
-    var vec = [node.vec[0],node.vec[1]];
+    var vec = [0,0];
     var max = [-1e-9,-1e-9], min = [1e9,1e9];
     _.forEach(bodies, function(body){
       vec[0] += body.pos[0] - node.pos[0];

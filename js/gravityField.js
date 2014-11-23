@@ -26,8 +26,9 @@ var GravityField = function(options) {
     isMobile = options.isMobile,
     bodies = [],
     vecField = null,
+    showField = true,
     run = true,
-    scale = 20,
+    scale = 10,
     maxRadius = 30,
     maxWeight = 100;
 
@@ -68,7 +69,7 @@ var GravityField = function(options) {
 
   function drawSystem() {
     context.clearRect(0, 0, width, height);
-    vecField.draw(context);
+    showField && vecField.draw(context);
     for (var i = 0; i < bodies.length; i++) {
       bodies[i].draw(context);
     }
@@ -148,6 +149,8 @@ var GravityField = function(options) {
         [0, width],
         [0, height]
       ]));
+    }else if (e.keyCode == 102){
+      showField = !showField;
     }
   }
 
