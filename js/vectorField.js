@@ -43,7 +43,7 @@ VectorField.prototype.updateField = function(rbf, bodies){
       if(min[1] > vec[1]) min[1] = vec[1];
       else if(max[1] < vec[1]) max[1] = vec[1];
     });
-    var mag = Math.sqrt(vec[0]*vec[0]+vec[1]*vec[1]);
+    var mag = Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
     node.vec[0] = vec[0]/mag;
     node.vec[1] = vec[1]/mag;
   });
