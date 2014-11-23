@@ -25,6 +25,7 @@ var GravityField = function(options) {
     initialSetup = true,
     isMobile = options.isMobile,
     bodies = [],
+    satellites = [],
     vecField = null,
     showField = true,
     run = true,
@@ -70,6 +71,11 @@ var GravityField = function(options) {
   function drawSystem() {
     context.clearRect(0, 0, width, height);
     showField && vecField.draw(context);
+    if (satellites.length > 0) {
+      _.forEach(satellites, function(sat) {
+        sat.draw(context);
+      });
+    }
     for (var i = 0; i < bodies.length; i++) {
       bodies[i].draw(context);
     }
@@ -80,8 +86,10 @@ var GravityField = function(options) {
     if (run) {
       updateBodies();
       updateField();
-      drawSystem();
+      //updateSats();
     }
+    updateSats();
+    drawSystem();
     reqFrame(updateSystem);
   }
 
@@ -101,10 +109,16 @@ var GravityField = function(options) {
       return body.mass;
     });
     var locations = bodies.map(function(body) {
-      return [body.pos[0]- body.r, body.pos[1]- body.r];
+      return [body.pos[0] - body.r, body.pos[1] - body.r];
     });
     if (rbf.compileSync(locations, target))
       vecField.updateField(rbf, bodies);
+  }
+
+  function updateSats() {
+    _.forEach(satellites, function(sat) {
+      sat.step(rbf, bodies);
+    });
   }
 
   function onMouseMove(mouse) {
@@ -138,6 +152,15 @@ var GravityField = function(options) {
     }));
   }
 
+  function addSat(pos) {
+    satellites.push(new Satellite({
+      pos: pos,
+      r: 5 + ~~(Math.random() * 5),
+      maxX: width,
+      maxY: height
+    }));
+  }
+
   function onKeyPress(e) {
     if (e.keyCode === 0 || e.keyCode == 32) { //space
       run = !run;
@@ -149,9 +172,14 @@ var GravityField = function(options) {
         [0, width],
         [0, height]
       ]));
-    }else if (e.keyCode == 102){
+    } else if (e.keyCode == 102) {
       showField = !showField;
-    }
+    } else if (e.keyCode == 115) {
+      addSat(getRandomPoint(2, [
+        [0, width],
+        [0, height]
+        ]));
+      }
   }
 
   function resize(size) {

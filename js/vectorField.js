@@ -87,11 +87,16 @@ FieldNode.prototype.draw = function(context, max){
   context.strokeStyle = color;
 
   context.moveTo(pnt[0], pnt[1]);
-  var angle = Math.PI/2.0;
+  //var angle = Math.PI/2.0;
   var rotatedVec = [
-    this.vec[0] * Math.cos(angle) - this.vec[1] * Math.sin(angle),
-    this.vec[0] * Math.sin(angle) + this.vec[1] * Math.cos(angle),
+    this.vec[0],
+    this.vec[1],
   ];
+  //var angle = Math.PI/2.0;
+  // var rotatedVec = [
+  // this.vec[0] * Math.cos(angle) - this.vec[1] * Math.sin(angle),
+  // this.vec[0] * Math.sin(angle) + this.vec[1] * Math.cos(angle),
+  //  ];
   context.lineTo(pnt[0]+rotatedVec[0] * scaled * 10, pnt[1]+rotatedVec[1] * scaled*10);
   //context.rect(pnt[0], pnt[1], this.width, this.height);
   //context.font="12px Georgia";
