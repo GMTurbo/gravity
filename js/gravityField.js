@@ -27,7 +27,7 @@ var GravityField = function(options) {
     bodies = [],
     vecField = null,
     run = true,
-    scale = 10,
+    scale = 20,
     maxRadius = 30,
     maxWeight = 100;
 

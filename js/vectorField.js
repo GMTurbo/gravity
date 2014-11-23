@@ -43,11 +43,9 @@ VectorField.prototype.updateField = function(rbf, bodies){
       if(min[1] > vec[1]) min[1] = vec[1];
       else if(max[1] < vec[1]) max[1] = vec[1];
     });
-
-
-
-    node.vec[0] = vec[0]/(Math.abs(max[0])+Math.abs(min[0]));
-    node.vec[1] = vec[1]/(Math.abs(max[1])+Math.abs(min[1]));
+    var mag = Math.sqrt(vec[0]*vec[0]+vec[1]*vec[1]);
+    node.vec[0] = vec[0]/mag;
+    node.vec[1] = vec[1]/mag;
   });
 
   //dont have node.vec
@@ -87,12 +85,14 @@ FieldNode.prototype.draw = function(context, max){
 
   context.fillStyle = color;
   context.strokeStyle = color;
-  // context.arc(pnt[0] - this.vec[0], pnt[1] - this.vec[1],
-  //   Math.sqrt(this.vec[0]*this.vec[0]+this.vec[1]*this.vec[1]), 0, 2 * Math.PI, false);
-  //
-  var mag = Math.sqrt(this.vec[0]*this.vec[0]+this.vec[1]*this.vec[1]);
+
   context.moveTo(pnt[0], pnt[1]);
-  context.lineTo(pnt[0]+this.vec[0] * scaled * this.width, pnt[1]+this.vec[1] * this.height);
+  var angle = Math.PI/2.0;
+  var rotatedVec = [
+    this.vec[0] * Math.cos(angle) - this.vec[1] * Math.sin(angle),
+    this.vec[0] * Math.sin(angle) + this.vec[1] * Math.cos(angle),
+  ];
+  context.lineTo(pnt[0]+rotatedVec[0] * scaled * 10, pnt[1]+rotatedVec[1] * scaled*10);
   //context.rect(pnt[0], pnt[1], this.width, this.height);
   //context.font="12px Georgia";
   //context.fillText(this.val.toPrecision(1),pnt[0],pnt[1]);
