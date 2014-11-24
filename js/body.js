@@ -22,7 +22,7 @@ Body.prototype.draw = function(context) {
   context.arc(pnt[0] - this.r, pnt[1] - this.r, this.r, 0, 2 * Math.PI, false);
   context.closePath();
   context.fill();
-  context.stroke();
+  //context.stroke();
 };
 
 Body.prototype.step = function() {

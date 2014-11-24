@@ -78,7 +78,7 @@ var FieldNode = function(params){
 
 FieldNode.prototype.draw = function(context, max){
   var pnt = this.pos;
-  var scaled = Math.abs(this.val/max);
+  var scaled = 1;//Math.abs(this.val/max);
   var color = this.getColor(scaled);
   //*********************
   context.beginPath();
@@ -102,7 +102,7 @@ FieldNode.prototype.draw = function(context, max){
   //context.font="12px Georgia";
   //context.fillText(this.val.toPrecision(1),pnt[0],pnt[1]);
   context.closePath();
-  context.fill();
+  //context.fill();
   context.stroke();
   //  context.stroke();
 };

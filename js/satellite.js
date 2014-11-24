@@ -21,7 +21,7 @@ Satellite.prototype.draw = function(context) {
   context.arc(pnt[0] - this.r, pnt[1] - this.r, this.r, 0, 2 * Math.PI, false);
   context.closePath();
   context.fill();
-  context.stroke();
+  //context.stroke();
 };
 
 Satellite.prototype.step = function(rbf, bodies) {
@@ -39,15 +39,15 @@ Satellite.prototype.step = function(rbf, bodies) {
     else if (max[1] < vec[1]) max[1] = vec[1];
   });
   var mag = Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
-  this.velocity = Math.sqrt(this.val * mag);
-  //  this.vec[0] = vec[0]/mag;
-  //  this.vec[1] = vec[1]/mag;
-  this.pos[0] += this.velocity * (vec[0] / mag);
-  this.pos[1] += this.velocity * (vec[1] / mag);
+  // this.velocity = Math.sqrt(this.val * mag);
+  // this.pos[0] += this.velocity * (vec[0] / mag);
+  // this.pos[1] += this.velocity * (vec[1] / mag);
+  this.pos[0] += vec[0]/mag;
+  this.pos[1] += vec[1]/mag;
 };
 
 Satellite.prototype.getColor = function() {
-  return 'rgb(255,128,128)';
+  return 'rgb(0,128,128)';
 };
 
 Satellite.prototype.getShadowColor = function() {
