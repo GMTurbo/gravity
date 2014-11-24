@@ -38,19 +38,18 @@ VectorField.prototype.updateField = function(rbf, bodies) {
       min = [1e9, 1e9];
     _.forEach(bodies, function(body) {
       vec[0] += body.pos[0] - node.pos[0];
-      if (min[0] > vec[0]) min[0] = vec[0];
-      else if (max[0] < vec[0]) max[0] = vec[0];
+      //if (min[0] > vec[0]) min[0] = vec[0];
+      //else if (max[0] < vec[0]) max[0] = vec[0];
       vec[1] += body.pos[1] - node.pos[1];
-      if (min[1] > vec[1]) min[1] = vec[1];
-      else if (max[1] < vec[1]) max[1] = vec[1];
+      //if (min[1] > vec[1]) min[1] = vec[1];
+      //else if (max[1] < vec[1]) max[1] = vec[1];
     });
+    vec[0]/=bodies.length;
+    vec[1]/=bodies.length;
     var mag = Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
     node.vec[0] = vec[0] / mag;
     node.vec[1] = vec[1] / mag;
   });
-
-  //dont have node.vec
-
 };
 
 VectorField.prototype.draw = function(context) {
@@ -89,16 +88,16 @@ FieldNode.prototype.draw = function(context, max) {
   context.strokeStyle = color;
 
   context.moveTo(pnt[0], pnt[1]);
-  //var angle = Math.PI/2.0;
-  // var rotatedVec = [
-  //   this.vec[0],
-  //   this.vec[1],
-  // ];
-  var angle = Math.PI / 2.0;
+  var angle = Math.PI/2.0;
   var rotatedVec = [
-    this.vec[0] * Math.cos(angle) - this.vec[1] * Math.sin(angle),
-    this.vec[0] * Math.sin(angle) + this.vec[1] * Math.cos(angle),
+    this.vec[0],
+    this.vec[1],
   ];
+  // var angle = Math.PI / 2.0;
+  // var rotatedVec = [
+  //   this.vec[0] * Math.cos(angle) - this.vec[1] * Math.sin(angle),
+  //   this.vec[0] * Math.sin(angle) + this.vec[1] * Math.cos(angle),
+  // ];
   context.lineTo(pnt[0] + rotatedVec[0] * scaled * 20, pnt[1] + rotatedVec[1] * scaled * 20);
   //context.rect(pnt[0], pnt[1], this.width, this.height);
   //context.font="12px Georgia";

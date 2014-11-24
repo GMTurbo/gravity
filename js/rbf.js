@@ -38,12 +38,36 @@ var RBF = function() {
 
     var matrix = [],
       matRow = [];
+    var P = [],
+      pRow = [];
     for (var i = 0; i < centers.length; i++) {
+
       matRow = [];
+      pRow = [1];
+      for (var k = 0; k < centers[i].length; k++) {
+        pRow.push(centers[i][k]);
+      }
+
       for (var j = 0; j < centers.length; j++) {
         matRow.push(kernel(centers[i], centers[j]));
       }
-      matrix.push(matRow);
+      P.push(pRow);
+      matrix.push(matRow.concat(pRow));
+
+    }
+
+    var pT = $M(P).transpose();
+
+    var newRows = pT.elements.map(function(row) {
+      for (var i = row.length; i < matrix[0].length; i++) {
+        row.push(0);
+      }
+      return row;
+    });
+
+    for (var i = 0; i < newRows.length; i++) {
+      matrix.push(newRows[i]);
+      ys.push(0);
     }
 
     ws = this._solve(ys, matrix);
@@ -113,6 +137,10 @@ var RBF = function() {
       i = 0;
     for (i = 0; i < centers.length; i++) {
       result += Number(ws.elements[i]) * kernel(pnt, centers[i]);
+    }
+    result += Number(ws.elements[centers.length]);
+    for (i = 0; i < pnt.length; i++) {
+      result += pnt[i] * Number(ws.elements[centers.length + (i + 1)]);
     }
     return result;
   };
