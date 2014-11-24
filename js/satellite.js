@@ -26,6 +26,7 @@ Satellite.prototype.draw = function(context) {
 
 Satellite.prototype.step = function(rbf, bodies) {
   this.val = rbf.getValue(this.pos);
+
   var pos = this.pos;
   var vec = [0, 0];
   var max = [-1e-9, -1e-9],
@@ -39,11 +40,16 @@ Satellite.prototype.step = function(rbf, bodies) {
     else if (max[1] < vec[1]) max[1] = vec[1];
   });
   var mag = Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
+  var angle = Math.PI / 2.0;
+  vec = [
+    vec[0] * Math.cos(angle) - vec[1] * Math.sin(angle),
+    vec[0] * Math.sin(angle) + vec[1] * Math.cos(angle),
+  ];
   // this.velocity = Math.sqrt(this.val * mag);
   // this.pos[0] += this.velocity * (vec[0] / mag);
   // this.pos[1] += this.velocity * (vec[1] / mag);
-  this.pos[0] += vec[0]/mag;
-  this.pos[1] += vec[1]/mag;
+  this.pos[0] += vec[0] / mag;
+  this.pos[1] += vec[1] / mag;
 };
 
 Satellite.prototype.getColor = function() {
