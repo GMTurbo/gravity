@@ -48,8 +48,8 @@ Satellite.prototype.step = function(rbf, bodies) {
   // this.velocity = Math.sqrt(this.val * mag);
   // this.pos[0] += this.velocity * (vec[0] / mag);
   // this.pos[1] += this.velocity * (vec[1] / mag);
-  this.pos[0] += vec[0] / mag;
-  this.pos[1] += vec[1] / mag;
+  this.pos[0] += 10 * vec[0] / mag;
+  this.pos[1] += 10 * vec[1] / mag;
 };
 
 Satellite.prototype.getColor = function() {
