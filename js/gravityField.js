@@ -107,14 +107,7 @@ var GravityField = function(options) {
     // magnitude is force and next trajectory unit vector is
     // sum vx, sum vy
     var target = bodies.map(function(body) {
-      return _.reduce(bodies, function(result, curr, key) {
-        if (body.pos[0] != curr.pos[0] && body.pos[1] != curr.pos[1]){
-          var val = 6.67e-11 * (curr.mass * body.mass) /
-          Math.sqrt(Math.pow(curr.pos[0] - body.pos[0], 2) + Math.pow(curr.pos[1] - body.pos[1], 2));
-          result+=val;
-        }
-        return result;
-      }, 0);
+      return 1;
     });
     var locations = bodies.map(function(body) {
       return [body.pos[0] - body.r, body.pos[1] - body.r];

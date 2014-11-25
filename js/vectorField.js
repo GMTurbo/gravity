@@ -98,13 +98,13 @@ FieldNode.prototype.draw = function(context, max) {
   //   this.vec[0] * Math.cos(angle) - this.vec[1] * Math.sin(angle),
   //   this.vec[0] * Math.sin(angle) + this.vec[1] * Math.cos(angle),
   // ];
-  context.lineTo(pnt[0] + rotatedVec[0] * scaled * 20, pnt[1] + rotatedVec[1] * scaled * 20);
-  //context.rect(pnt[0], pnt[1], this.width, this.height);
+  //context.lineTo(pnt[0] + rotatedVec[0] * scaled * 20, pnt[1] + rotatedVec[1] * scaled * 20);
+  context.rect(pnt[0], pnt[1], this.width, this.height);
   //context.font="12px Georgia";
   //context.fillText(this.val.toPrecision(1),pnt[0],pnt[1]);
   context.closePath();
-  //context.fill();
-  context.stroke();
+  context.fill();
+  //context.stroke();
   //  context.stroke();
 };
 

@@ -3,7 +3,7 @@ var Body = function(params) {
 
   this.pos = params.pos || [0, 0];
   this.r = params.r || 10;
-  this.mass = params.mass || 1000;
+  this.mass = params.mass || 1e6;
   this.dx = params.dx || -2 + Math.random() * 4 ;
   this.dy = params.dy || -2 + Math.random() * 4 ;
   this.maxX = params.maxX || 100;

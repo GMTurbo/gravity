@@ -1,6 +1,6 @@
 var RBF = function() {
   var centers, ws, ys;
-  var sigma = 0.01;
+  //var sigma = 0.01;
   var distance = function(pnt1, pnt2) {
     var sum = 0;
     if (!pnt1.length)
@@ -14,9 +14,9 @@ var RBF = function() {
   //gaussian
   var kernel = function(pnt1, pnt2) {
     var r = distance(pnt1, pnt2);
-
     if (r === 0) return 0;
-    return Math.exp(-(sigma * r));
+    var val = 1e-6/(r*r)
+    return val;
   };
 
   this.compileSync = function(cents, y_vals) {
